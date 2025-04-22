@@ -1,52 +1,22 @@
-import os
-import logging
 import json
+import logging
 import io
 import wave
 from collections import deque
-
 import numpy as np
-import uvicorn
-from fastapi import FastAPI, WebSocket
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
-from vosk import Model, KaldiRecognizer
-from transformers import pipeline
+from fastapi import WebSocket
+from vosk import KaldiRecognizer
+from models.vosk_model import get_vosk_model, SAMPLERATE
+from models.whisper_model import run_whisper
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-app = FastAPI()
-app.mount("/static", StaticFiles(directory="service/app/static/"), name="static")
-
-@app.get("/")
-async def root():
-    return {"message": "WebSocket работает!"}
-
-@app.get("/voice")
-async def get_voice_html():
-    file_path = "voice.html"
-    if not os.path.exists(file_path):
-        return {"error": "Файл voice.html не найден"}
-    with open(file_path, 'r', encoding='utf-8') as f:
-        return HTMLResponse(f.read())
-
-MODEL_PATH = "vosk-model-small-ru-0.22"
-if not os.path.exists(MODEL_PATH):
-    raise RuntimeError(f"Модель Vosk не найдена в {MODEL_PATH}")
-vosk_model = Model(MODEL_PATH)
-samplerate = 16000
-
-whisper_pipeline = pipeline("automatic-speech-recognition", model="openai/whisper-large-v3")
-
-client_states = {}
-
-@app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     logger.info("WebSocket соединение установлено")
     await websocket.accept()
 
-    recognizer = KaldiRecognizer(vosk_model, samplerate)
+    vosk_model = get_vosk_model()
+    recognizer = KaldiRecognizer(vosk_model, SAMPLERATE)
     audio_buffer = deque()
     full_audio = np.array([], dtype=np.float32)
 
@@ -87,21 +57,3 @@ async def websocket_endpoint(websocket: WebSocket):
             logger.info("Whisper текст: %s", result_text)
         except Exception as whisper_err:
             logger.error(f"Ошибка при распознавании Whisper: {whisper_err}")
-
-async def run_whisper(audio_float32: np.ndarray) -> str:
-    audio_int16 = (audio_float32 * 32767).astype(np.int16)
-
-    with io.BytesIO() as wav_io:
-        with wave.open(wav_io, 'wb') as wf:
-            wf.setnchannels(1)
-            wf.setsampwidth(2)
-            wf.setframerate(samplerate)
-            wf.writeframes(audio_int16.tobytes())
-        wav_bytes = wav_io.getvalue()
-
-    result = whisper_pipeline(wav_bytes)
-    return result["text"]
-
-if __name__ == "__main__":
-    logger.info("Запуск FastAPI сервера")
-    uvicorn.run(app, host="127.0.0.1", port=8000)
