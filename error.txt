@@ -1,3 +1,0 @@
-2025-04-23 19:15:47,789 - WARNING - Соединение закрыто. Финальное распознавание Whisper: (<CloseCode.NO_STATUS_RCVD: 1005>, '')
-2025-04-23 19:15:47,789 - INFO - Запуск Whisper для финального распознавания...
-2025-04-23 19:15:47,971 - ERROR - Ошибка при распознавании Whisper: ffmpeg was not found but is required to load audio files from filename
