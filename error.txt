@@ -1,6 +1,3 @@
-Connecting AudioNodes from AudioContexts with different sample-rate is currently not supported. script.js:45:24
-Uncaught (in promise) DOMException: AudioContext.createMediaStreamSource: Connecting AudioNodes from AudioContexts with different sample-rate is currently not supported.
-    startRecognition http://127.0.0.1:8000/static/script.js:45
-    async* http://127.0.0.1:8000/static/script.js:11
-    EventListener.handleEvent* http://127.0.0.1:8000/static/script.js:6
-script.js:45
+2025-04-23 15:07:41,195 - WARNING - Соединение закрыто. Финальное распознавание Whisper: (<CloseCode.NO_STATUS_RCVD: 1005>, '')
+2025-04-23 15:07:41,195 - INFO - Запуск Whisper для финального распознавания...
+2025-04-23 15:07:41,425 - ERROR - Ошибка при распознавании Whisper: ffmpeg was not found but is required to load audio files from filename
