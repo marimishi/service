@@ -6,7 +6,7 @@ import wave
 from fastapi import WebSocket
 from vosk import KaldiRecognizer
 from models.vosk_model import get_vosk_model, SAMPLERATE
-from models.whisper_model import transcriber  # предположим, ты импортируешь pipeline заранее
+from models.whisper_model import _whisper_pipeline 
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +59,6 @@ async def websocket_endpoint(websocket: WebSocket):
         try:
             logger.info("Запуск Whisper для финального распознавания...")
 
-            # Преобразуем в WAV in-memory
             audio_int16 = (full_audio * 32767).astype(np.int16)
             with io.BytesIO() as wav_io:
                 with wave.open(wav_io, 'wb') as wf:
@@ -69,8 +68,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     wf.writeframes(audio_int16.tobytes())
                 wav_bytes = wav_io.getvalue()
 
-            # передаем в pipeline whisper
-            result = transcriber(wav_bytes)
+            result = _whisper_pipeline(wav_bytes)
             result_text = result["text"]
 
             logger.info("Whisper текст: %s", result_text)
