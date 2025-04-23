@@ -23,9 +23,19 @@ async function startRecognition() {
   };
 
   ws.onmessage = (event) => {
-    const message = event.data;
-    container.textContent = message;
+    try {
+      const message = JSON.parse(event.data);
+      if (message.type === "partial") {
+        console.log("Частично: ", message.text);
+      } else if (message.type === "final") {
+        console.log("Финально: ", message.text);
+      }
+      container.textContent = message.text; 
+    } catch (err) {
+      console.error("Ошибка при парсинге сообщения: ", err);
+    }
   };
+  
 
   ws.onclose = () => {
     console.log("WebSocket соединение закрыто.");
