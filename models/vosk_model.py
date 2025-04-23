@@ -1,7 +1,7 @@
 import os
 from vosk import Model
 
-MODEL_PATH = "vosk-model-small-ru-0.22"
+MODEL_PATH = "models/vosk-model-ru-0.42"
 SAMPLERATE = 16000
 
 if not os.path.exists(MODEL_PATH):
