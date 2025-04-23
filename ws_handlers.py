@@ -1,11 +1,12 @@
 import json
 import logging
 import numpy as np
-from collections import deque
+import io
+import wave
 from fastapi import WebSocket
 from vosk import KaldiRecognizer
 from models.vosk_model import get_vosk_model, SAMPLERATE
-from models.whisper_model import run_whisper
+from models.whisper_model import transcriber  # предположим, ты импортируешь pipeline заранее
 
 logger = logging.getLogger(__name__)
 
@@ -15,12 +16,12 @@ async def websocket_endpoint(websocket: WebSocket):
 
     vosk_model = get_vosk_model()
     recognizer = KaldiRecognizer(vosk_model, SAMPLERATE)
-    recognizer.SetWords(True)  
+    recognizer.SetWords(True)
 
     full_audio = np.array([], dtype=np.float32)
     vosk_buffer = np.array([], dtype=np.int16)
 
-    CHUNK_SIZE = 4000  
+    CHUNK_SIZE = 4000
     partial_result = ""
     last_sent_text = ""
 
@@ -57,9 +58,26 @@ async def websocket_endpoint(websocket: WebSocket):
         logger.warning(f"Соединение закрыто. Финальное распознавание Whisper: {e}")
         try:
             logger.info("Запуск Whisper для финального распознавания...")
-            result_text = await run_whisper(full_audio)
+
+            # Преобразуем в WAV in-memory
+            audio_int16 = (full_audio * 32767).astype(np.int16)
+            with io.BytesIO() as wav_io:
+                with wave.open(wav_io, 'wb') as wf:
+                    wf.setnchannels(1)
+                    wf.setsampwidth(2)
+                    wf.setframerate(SAMPLERATE)
+                    wf.writeframes(audio_int16.tobytes())
+                wav_bytes = wav_io.getvalue()
+
+            # передаем в pipeline whisper
+            result = transcriber(wav_bytes)
+            result_text = result["text"]
+
             logger.info("Whisper текст: %s", result_text)
+            await websocket.send_text(json.dumps({"type": "whisper", "text": result_text}))
+
         except Exception as whisper_err:
             logger.error(f"Ошибка при распознавании Whisper: {whisper_err}")
+
         finally:
             await websocket.close()
