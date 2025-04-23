@@ -5,8 +5,9 @@ import io
 import wave
 from fastapi import WebSocket
 from vosk import KaldiRecognizer
+from pydub import AudioSegment
 from models.vosk_model import get_vosk_model, SAMPLERATE
-from models.whisper_model import _whisper_pipeline 
+from models.whisper_model import _whisper_pipeline
 
 logger = logging.getLogger(__name__)
 
@@ -67,6 +68,14 @@ async def websocket_endpoint(websocket: WebSocket):
                     wf.setframerate(SAMPLERATE)
                     wf.writeframes(audio_int16.tobytes())
                 wav_bytes = wav_io.getvalue()
+
+            audio_segment = AudioSegment.from_wav(io.BytesIO(wav_bytes))
+            
+            audio_segment = audio_segment.set_channels(1).set_sample_width(2).set_frame_rate(SAMPLERATE)
+            with io.BytesIO() as processed_audio:
+                audio_segment.export(processed_audio, format="wav")
+                processed_audio.seek(0)
+                wav_bytes = processed_audio.read()
 
             result = _whisper_pipeline(wav_bytes)
             result_text = result["text"]
