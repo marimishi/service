@@ -1,0 +1,6 @@
+Connecting AudioNodes from AudioContexts with different sample-rate is currently not supported. script.js:45:24
+Uncaught (in promise) DOMException: AudioContext.createMediaStreamSource: Connecting AudioNodes from AudioContexts with different sample-rate is currently not supported.
+    startRecognition http://127.0.0.1:8000/static/script.js:45
+    async* http://127.0.0.1:8000/static/script.js:11
+    EventListener.handleEvent* http://127.0.0.1:8000/static/script.js:6
+script.js:45

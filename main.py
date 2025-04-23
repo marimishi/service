@@ -12,10 +12,6 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/")
-async def root():
-    return {"message": "WebSocket работает!"}
-
-@app.get("/voice")
 async def get_voice_html():
     file_path = "static/voice.html"
     if not os.path.exists(file_path):

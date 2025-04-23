@@ -1,7 +1,7 @@
 let audioContext, stream, processor, source, ws;
 
 const mic = document.querySelector(".mic");
-const container = document.querySelector(".mini-container");
+const container = document.querySelector(".container");
 
 mic.addEventListener("click", async () => {
   mic.classList.toggle("active");
