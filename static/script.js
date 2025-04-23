@@ -36,7 +36,7 @@ async function startRecognition() {
     console.error("Ошибка WebSocket: ", error);
   };
 
-  audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+  audioContext = new (window.AudioContext || window.webkitAudioContext)();
   await audioContext.resume();
 
   stream = await navigator.mediaDevices.getUserMedia({ audio: true });
