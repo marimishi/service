@@ -1,3 +1,60 @@
-2025-04-23 15:07:41,195 - WARNING - Соединение закрыто. Финальное распознавание Whisper: (<CloseCode.NO_STATUS_RCVD: 1005>, '')
-2025-04-23 15:07:41,195 - INFO - Запуск Whisper для финального распознавания...
-2025-04-23 15:07:41,425 - ERROR - Ошибка при распознавании Whisper: ffmpeg was not found but is required to load audio files from filename
+025-04-23 17:28:14,601 - WARNING - Соединение закрыто. Финальное распознавание Whisper: (<CloseCode.NO_STATUS_RCVD: 1005>, '')
+2025-04-23 17:28:14,601 - INFO - Запуск Whisper для финального распознавания...
+2025-04-23 17:28:14,895 - ERROR - Ошибка при распознавании Whisper: ffmpeg was not found but is required to load audio files from filename
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/tsk-mpmishina/Desktop/service/service/ws_handlers.py", line 29, in websocket_endpoint
+    data = await websocket.receive_bytes()
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/starlette/websockets.py", line 126, in receive_bytes
+    self._raise_on_disconnect(message)
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/starlette/websockets.py", line 113, in _raise_on_disconnect
+    raise WebSocketDisconnect(message["code"], message.get("reason"))
+starlette.websockets.WebSocketDisconnect: (<CloseCode.NO_STATUS_RCVD: 1005>, '')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 242, in run_asgi
+    result = await self.app(self.scope, self.asgi_receive, self.asgi_send)  # type: ignore[func-returns-value]
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/fastapi/applications.py", line 1054, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/starlette/applications.py", line 112, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/starlette/middleware/errors.py", line 152, in __call__
+    await self.app(scope, receive, send)
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/starlette/routing.py", line 362, in handle
+    await self.app(scope, receive, send)
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/starlette/routing.py", line 95, in app
+    await wrap_app_handling_exceptions(app, session)(scope, receive, send)
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/starlette/routing.py", line 93, in app
+    await func(session)
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/fastapi/routing.py", line 383, in app
+    await dependant.call(**solved_result.values)
+  File "/home/tsk-mpmishina/Desktop/service/service/ws_handlers.py", line 65, in websocket_endpoint
+    await websocket.close()
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/starlette/websockets.py", line 180, in close
+    await self.send({"type": "websocket.close", "code": code, "reason": reason or ""})
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/starlette/websockets.py", line 85, in send
+    await self._send(message)
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/starlette/_exception_handler.py", line 39, in sender
+    await send(message)
+  File "/home/tsk-mpmishina/Desktop/service/service/.venv/lib/python3.8/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 358, in asgi_send
+    raise RuntimeError(msg % message_type)
+RuntimeError: Unexpected ASGI message 'websocket.close', after sending 'websocket.close' or response already completed.
+INFO:     connection closed
